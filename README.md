@@ -113,9 +113,6 @@ npm install
 
 Crée un fichier `.env.local` à la racine :
 ```env
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/helpdesk
-NEXTAUTH_SECRET=ta-cle-secrete
-NEXTAUTH_URL=http://localhost:3000
 ```
 
 **4. Créer un compte technicien**
