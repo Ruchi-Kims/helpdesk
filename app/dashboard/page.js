@@ -2,27 +2,15 @@ import Link from 'next/link';
 import StatusBadge from '@/components/StatusBadge';
 import Filtres from '@/components/Filtres';
 import { Suspense } from 'react';
+import { getTicketsData } from '@/lib/tickets';
 
-async function getTickets(search, statut, priorite) {
-  // Construction de l'URL avec les filtres
-  const params = new URLSearchParams();
-  if (search)   params.set('search', search);
-  if (statut)   params.set('statut', statut);
-  if (priorite) params.set('priorite', priorite);
-
-  const url = `http://localhost:3000/api/tickets?${params.toString()}`;
-  const res = await fetch(url, { cache: 'no-store' });
-  if (!res.ok) return [];
-  return res.json();
-}
 
 export default async function Dashboard({ searchParams }) {
-  // On récupère les filtres depuis l'URL
-  const search   = searchParams.search   || '';
-  const statut   = searchParams.statut   || '';
-  const priorite = searchParams.priorite || '';
+  // On attend que les searchParams soient résolus
+  const { search = '', statut = '', priorite = '' } = await searchParams;
 
-  const tickets = await getTickets(search, statut, priorite);
+  // APPEL DIRECT À LA BASE DE DONNÉES (Plus de fetch !)
+  const tickets = await getTicketsData(search, statut, priorite);
 
   const stats = {
     total:   tickets.length,
@@ -132,3 +120,4 @@ export default async function Dashboard({ searchParams }) {
     </div>
   );
 }
+
