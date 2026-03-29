@@ -26,6 +26,8 @@ export default function Login() {
       email:    form.email,
       password: form.password,
       redirect: false  // on gère la redirection manuellement
+
+      
     });
 
     if (result?.error) {
