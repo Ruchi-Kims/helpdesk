@@ -1,10 +1,9 @@
-import { Inter } from 'next/font/google';
+import { Sora } from 'next/font/google';
 import './globals.css';
-import TopBar from '@/components/TopBar';
-import Sidebar from '@/components/Sidebar';
 import Providers from '@/components/Providers';
+import AppShell from '@/components/AppShell';
 
-const inter = Inter({ subsets: ['latin'] });
+const sora = Sora({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
 export const metadata = {
   title: 'HelpDesk IT',
@@ -14,17 +13,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="fr">
-      <body className={inter.className}>
+      <body className={sora.className}>
         <Providers>
-          <div className="flex flex-col min-h-screen">
-            <TopBar />
-            <div className="flex flex-1">
-              <Sidebar />
-              <main className="flex-1 p-6 bg-gray-50">
-                {children}
-              </main>
-            </div>
-          </div>
+          <AppShell>{children}</AppShell>
         </Providers>
       </body>
     </html>

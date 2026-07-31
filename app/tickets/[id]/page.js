@@ -2,6 +2,9 @@ import Link from 'next/link';
 import StatusBadge from '@/components/StatusBadge';
 import TicketActions from '@/components/TicketActions';
 import DeleteButton from '@/components/DeleteButton';
+import AssignTechnicien from '@/components/AssignTechnicien';
+import { connectDB } from '@/lib/mongodb';
+import User from '@/models/User';
 
 // Récupère un seul ticket par son ID
 async function getTicket(id) {
@@ -12,8 +15,16 @@ async function getTicket(id) {
   return res.json();
 }
 
+// Récupère la liste des techniciens pour le sélecteur d'assignation
+async function getTechniciens() {
+  await connectDB();
+  const users = await User.find({ role: 'technicien' }).lean();
+  return users.map(u => ({ ...u, _id: u._id.toString() }));
+}
+
 export default async function TicketDetail({ params }) {
   const ticket = await getTicket(params.id);
+  const techniciens = await getTechniciens();
 
   // Si le ticket n'existe pas
   if (!ticket) {
@@ -123,6 +134,16 @@ export default async function TicketDetail({ params }) {
 
         {/* Colonne droite - Informations */}
         <div className="flex flex-col gap-4">
+
+          {/* Assignation du technicien */}
+          <div className="border border-gray-200 rounded-lg p-4">
+            <AssignTechnicien
+              ticketId={ticket._id}
+              technicienActuelId={ticket.assigneA}
+              techniciens={techniciens}
+            />
+          </div>
+
           <div className="border border-gray-200 rounded-lg p-4">
             <h2 className="text-xs font-medium text-gray-400 uppercase tracking-wide mb-3">
               Informations

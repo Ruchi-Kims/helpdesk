@@ -37,8 +37,7 @@ export default function Login() {
     }
 
     // Connexion réussie → dashboard
-    router.push('/dashboard');
-    router.refresh();
+    window.location.href = '/dashboard';
   }
 
   return (

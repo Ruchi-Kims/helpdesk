@@ -6,12 +6,11 @@ export default function Filtres() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Récupère les valeurs actuelles des filtres depuis l'URL
   const searchActuel = searchParams.get('search') || '';
   const statutActuel = searchParams.get('statut') || '';
   const prioriteActuelle = searchParams.get('priorite') || '';
+  const mesTicketsActuel = searchParams.get('mesTickets') === '1';
 
-  // Met à jour l'URL quand un filtre change
   function mettreAJourFiltres(cle, valeur) {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -24,13 +23,11 @@ export default function Filtres() {
     router.push(`/dashboard?${params.toString()}`);
   }
 
-  // Réinitialise tous les filtres
   function reinitialiser() {
     router.push('/dashboard');
   }
 
-  // Vérifie si un filtre est actif
-  const filtreActif = searchActuel || statutActuel || prioriteActuelle;
+  const filtreActif = searchActuel || statutActuel || prioriteActuelle || mesTicketsActuel;
 
   return (
     <div className="flex flex-wrap items-center gap-3 mb-6">
@@ -76,7 +73,19 @@ export default function Filtres() {
         <option value="basse">Basse</option>
       </select>
 
-      {/* Bouton réinitialiser — visible seulement si un filtre est actif */}
+      {/* Bouton Mes tickets */}
+      <button
+        onClick={() => mettreAJourFiltres('mesTickets', mesTicketsActuel ? '' : '1')}
+        className={`text-sm px-3 py-2 rounded-lg border transition-colors
+          ${mesTicketsActuel
+            ? 'bg-[#7C5CFC] text-white border-[#7C5CFC]'
+            : 'border-gray-200 text-gray-500 hover:bg-gray-50'
+          }`}
+      >
+        👤 Mes tickets
+      </button>
+
+      {/* Bouton réinitialiser */}
       {filtreActif && (
         <button
           onClick={reinitialiser}

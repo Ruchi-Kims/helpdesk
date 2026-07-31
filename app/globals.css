@@ -4,14 +4,14 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --border: 214.3 31.8% 91.4%;
-    --radius: 0.5rem;
+    --background: 262 60% 85%;      /* violet extérieur */
+    --foreground: 231 30% 16%;
+    --border: 240 20% 90%;
+    --radius: 1rem;
   }
 
   body {
-    background-color: #F8F9FA;
-    color: #111827;
+    background-color: #D6C6F7;
+    color: #1F2338;
   }
 }
