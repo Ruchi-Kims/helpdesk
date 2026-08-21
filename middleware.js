@@ -4,5 +4,6 @@ export const config = {
   matcher: [
     '/dashboard/:path*',
     '/tickets/:path*',
+    '/statistiques/:path*',
   ]
 };

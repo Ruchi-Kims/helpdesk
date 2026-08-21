@@ -18,6 +18,8 @@ const TicketSchema = new mongoose.Schema({
   ville: { type: String, default: '' },
   commentaires: [CommentaireSchema],
   assigneA: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  resolvedAt: { type: Date, default: null },
+  pieceJointe: { type: String, default: '' },
 }, { timestamps: true });
 
 const Ticket = mongoose.models.Ticket || mongoose.model('Ticket', TicketSchema);

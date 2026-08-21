@@ -2,10 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, X } from 'lucide-react';
+import { LayoutDashboard, BarChart3, X } from 'lucide-react';
 
 const menuItems = [
-  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Dashboard',     href: '/dashboard',     icon: LayoutDashboard },
+  { label: 'Statistiques',  href: '/statistiques',  icon: BarChart3 },
 ];
 
 export default function Sidebar({ open, onClose }) {

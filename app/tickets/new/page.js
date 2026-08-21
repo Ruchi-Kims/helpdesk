@@ -3,13 +3,13 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import UploadImage from '@/components/UploadImage';
 
 export default function NouveauTicket() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [erreur, setErreur] = useState('');
 
-  // État du formulaire — un objet avec tous les champs
   const [form, setForm] = useState({
     titre: '',
     description: '',
@@ -19,14 +19,13 @@ export default function NouveauTicket() {
     agence: '',
     code: '',
     ville: '',
+    pieceJointe: '',
   });
 
-  // Met à jour le champ correspondant dans l'objet form
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  // Envoie le formulaire à l'API
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -46,7 +45,6 @@ export default function NouveauTicket() {
         return;
       }
 
-      // Succès → on redirige vers le dashboard
       router.push('/dashboard');
       router.refresh();
 
@@ -58,7 +56,6 @@ export default function NouveauTicket() {
 
   return (
     <div className="max-w-2xl">
-      {/* Bouton retour + titre */}
       <Link
         href="/dashboard"
         className="text-sm text-gray-500 hover:text-gray-700 mb-4 inline-flex items-center gap-1"
@@ -72,7 +69,6 @@ export default function NouveauTicket() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-        {/* Titre */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             Titre du problème *
@@ -88,7 +84,6 @@ export default function NouveauTicket() {
           />
         </div>
 
-        {/* Description */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             Description *
@@ -104,7 +99,6 @@ export default function NouveauTicket() {
           />
         </div>
 
-        {/* Demandeur */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             Demandeur *
@@ -120,7 +114,6 @@ export default function NouveauTicket() {
           />
         </div>
 
-        {/* Agence + Code côte à côte */}
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -151,7 +144,6 @@ export default function NouveauTicket() {
           </div>
         </div>
 
-        {/* Ville */}
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">
             Ville
@@ -166,7 +158,6 @@ export default function NouveauTicket() {
           />
         </div>
 
-        {/* Priorité + Source côte à côte */}
         <div className="grid grid-cols-2 gap-4">
 
           <div className="flex flex-col gap-1.5">
@@ -203,14 +194,17 @@ export default function NouveauTicket() {
 
         </div>
 
-        {/* Message d'erreur */}
+        <UploadImage
+          valeurActuelle={form.pieceJointe}
+          onUploadSuccess={(url) => setForm({ ...form, pieceJointe: url })}
+        />
+
         {erreur && (
           <div className="bg-red-50 border border-red-200 text-red-700 text-sm px-3 py-2 rounded-lg">
             {erreur}
           </div>
         )}
 
-        {/* Boutons */}
         <div className="flex justify-end gap-3 mt-2">
           <Link
             href="/dashboard"

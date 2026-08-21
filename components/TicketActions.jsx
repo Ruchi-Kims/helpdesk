@@ -4,19 +4,30 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StatusBadge from './StatusBadge';
 
-export default function TicketActions({ ticketId, statut }) {
+export default function TicketActions({ ticketId, statut, resolvedAt }) {
   const router = useRouter();
   const [commentaire, setCommentaire] = useState('');
   const [loading, setLoading] = useState(false);
 
   // Changer le statut du ticket
   async function changerStatut(nouveauStatut) {
+    const estCloture = nouveauStatut === 'resolu' || nouveauStatut === 'ferme';
+    const body = { statut: nouveauStatut };
+
+    if (estCloture && !resolvedAt) {
+      // Première fois qu'on clôture → on fige la date pour le calcul SLA
+      body.resolvedAt = new Date();
+    } else if (!estCloture) {
+      // Ticket rouvert → l'horloge SLA repart de maintenant
+      body.resolvedAt = null;
+    }
+
     await fetch(`/api/tickets/${ticketId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ statut: nouveauStatut })
+      body: JSON.stringify(body)
     });
-    router.refresh(); // recharge la page pour voir le nouveau statut
+    router.refresh();
   }
 
   // Ajouter un commentaire
