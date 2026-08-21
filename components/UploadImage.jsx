@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
   const [preview, setPreview] = useState(valeurActuelle || '');
@@ -50,7 +51,7 @@ export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
 
       {preview ? (
         <div className="relative w-fit">
-          <img
+          <Image
             src={preview}
             alt="Aperçu"
             className="max-h-40 rounded-lg border border-gray-200 object-cover"

@@ -37,7 +37,7 @@ export default async function Statistiques() {
       <div className="mb-6">
         <h1 className="text-lg sm:text-xl font-semibold text-[#1F2338]">Statistiques</h1>
         <p className="text-sm text-[#8B8FA3] mt-0.5">
-          Vue d'ensemble de la performance du support
+          Vue d&apos;ensemble de la performance du support
         </p>
       </div>
 

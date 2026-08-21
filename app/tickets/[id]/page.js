@@ -7,6 +7,7 @@ import AssignTechnicien from '@/components/AssignTechnicien';
 import UploadImageTicket from '@/components/UploadImageTicket';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/models/User';
+import Image from 'next/image';
 
 async function getTicket(id) {
   const res = await fetch(`http://localhost:3000/api/tickets/${id}`, {
@@ -89,7 +90,7 @@ export default async function TicketDetail({ params }) {
 
             {ticket.pieceJointe && (
               <a href={ticket.pieceJointe} target="_blank" rel="noopener noreferrer">
-                <img
+                <Image
                   src={ticket.pieceJointe}
                   alt="Pièce jointe du ticket"
                   className="max-h-64 rounded-lg border border-gray-200 hover:opacity-90 transition-opacity"
