@@ -3,16 +3,29 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import StatusBadge from './StatusBadge';
+import { StatutTicket } from '@/models/Ticket';
 
-export default function TicketActions({ ticketId, statut, resolvedAt }) {
+interface TicketActionsProps {
+  ticketId: string;
+  statut: StatutTicket;
+  resolvedAt: Date | null;
+}
+
+interface PatchBody {
+  statut?: StatutTicket;
+  resolvedAt?: Date | null;
+  $push?: { commentaires: { texte: string; auteur: string } };
+}
+
+export default function TicketActions({ ticketId, statut, resolvedAt }: TicketActionsProps) {
   const router = useRouter();
-  const [commentaire, setCommentaire] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [commentaire, setCommentaire] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
 
   // Changer le statut du ticket
-  async function changerStatut(nouveauStatut) {
+  async function changerStatut(nouveauStatut: StatutTicket) {
     const estCloture = nouveauStatut === 'resolu' || nouveauStatut === 'ferme';
-    const body = { statut: nouveauStatut };
+    const body: PatchBody = { statut: nouveauStatut };
 
     if (estCloture && !resolvedAt) {
       // Première fois qu'on clôture → on fige la date pour le calcul SLA
@@ -25,23 +38,25 @@ export default function TicketActions({ ticketId, statut, resolvedAt }) {
     await fetch(`/api/tickets/${ticketId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
+      body: JSON.stringify(body),
     });
     router.refresh();
   }
 
   // Ajouter un commentaire
-  async function ajouterCommentaire(e) {
+  async function ajouterCommentaire(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!commentaire.trim()) return;
     setLoading(true);
 
+    const body: PatchBody = {
+      $push: { commentaires: { texte: commentaire, auteur: 'Technicien' } },
+    };
+
     await fetch(`/api/tickets/${ticketId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        $push: { commentaires: { texte: commentaire, auteur: 'Technicien' } }
-      })
+      body: JSON.stringify(body),
     });
 
     setCommentaire('');
@@ -49,7 +64,7 @@ export default function TicketActions({ ticketId, statut, resolvedAt }) {
     router.refresh();
   }
 
-  const statuts = ['ouvert', 'en_cours', 'resolu', 'ferme'];
+  const statuts: StatutTicket[] = ['ouvert', 'en_cours', 'resolu', 'ferme'];
 
   return (
     <div>
@@ -79,7 +94,7 @@ export default function TicketActions({ ticketId, statut, resolvedAt }) {
           <input
             type="text"
             value={commentaire}
-            onChange={(e) => setCommentaire(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCommentaire(e.target.value)}
             placeholder="Ajouter un commentaire..."
             className="flex-1 text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:border-blue-300"
           />

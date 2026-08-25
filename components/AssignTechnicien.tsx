@@ -3,11 +3,26 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function AssignTechnicien({ ticketId, technicienActuelId, techniciens }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
+interface Technicien {
+  _id: string;
+  nom: string;
+}
 
-  async function handleChange(e) {
+interface AssignTechnicienProps {
+  ticketId: string;
+  technicienActuelId: string | null;
+  techniciens: Technicien[];
+}
+
+export default function AssignTechnicien({
+  ticketId,
+  technicienActuelId,
+  techniciens,
+}: AssignTechnicienProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+
+  async function handleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const nouveauId = e.target.value;
     setLoading(true);
 

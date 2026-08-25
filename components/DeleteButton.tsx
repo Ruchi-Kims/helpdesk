@@ -3,15 +3,19 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export default function DeleteButton({ ticketId }) {
+interface DeleteButtonProps {
+  ticketId: string;
+}
+
+export default function DeleteButton({ ticketId }: DeleteButtonProps) {
   const router = useRouter();
-  const [confirmer, setConfirmer] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [confirmer, setConfirmer] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function supprimerTicket() {
     setLoading(true);
     await fetch(`/api/tickets/${ticketId}`, {
-      method: 'DELETE'
+      method: 'DELETE',
     });
     router.push('/dashboard');
     router.refresh();

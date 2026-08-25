@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { ImagePlus, X, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
-export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
-  const [preview, setPreview] = useState(valeurActuelle || '');
-  const [loading, setLoading] = useState(false);
-  const [erreur, setErreur] = useState('');
+interface UploadImageProps {
+  valeurActuelle?: string;
+  onUploadSuccess: (url: string) => void;
+}
 
-  async function handleFileChange(e) {
-    const file = e.target.files[0];
+interface CloudinaryResponse {
+  secure_url: string;
+}
+
+export default function UploadImage({ valeurActuelle, onUploadSuccess }: UploadImageProps) {
+  const [preview, setPreview] = useState<string>(valeurActuelle || '');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [erreur, setErreur] = useState<string>('');
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setErreur('');
@@ -18,7 +27,10 @@ export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+    formData.append(
+      'upload_preset',
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET as string
+    );
 
     try {
       const res = await fetch(
@@ -26,13 +38,13 @@ export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
         { method: 'POST', body: formData }
       );
 
-      if (!res.ok) throw new Error('Échec de l\'upload');
+      if (!res.ok) throw new Error("Échec de l'upload");
 
-      const data = await res.json();
+      const data: CloudinaryResponse = await res.json();
       setPreview(data.secure_url);
       onUploadSuccess(data.secure_url);
     } catch (err) {
-      setErreur('Erreur lors de l\'envoi de l\'image');
+      setErreur("Erreur lors de l'envoi de l'image");
     } finally {
       setLoading(false);
     }
@@ -54,6 +66,8 @@ export default function UploadImage({ valeurActuelle, onUploadSuccess }) {
           <Image
             src={preview}
             alt="Aperçu"
+            width={160}
+            height={160}
             className="max-h-40 rounded-lg border border-gray-200 object-cover"
           />
           <button

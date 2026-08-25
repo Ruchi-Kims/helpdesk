@@ -2,6 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+declare global {
+  interface Window {
+    _searchTimeout: ReturnType<typeof setTimeout>;
+  }
+}
+
 export default function Filtres() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -11,7 +17,7 @@ export default function Filtres() {
   const prioriteActuelle = searchParams.get('priorite') || '';
   const mesTicketsActuel = searchParams.get('mesTickets') === '1';
 
-  function mettreAJourFiltres(cle, valeur) {
+  function mettreAJourFiltres(cle: string, valeur: string) {
     const params = new URLSearchParams(searchParams.toString());
 
     if (valeur) {
@@ -38,7 +44,7 @@ export default function Filtres() {
           type="text"
           placeholder="Rechercher un ticket..."
           defaultValue={searchActuel}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             clearTimeout(window._searchTimeout);
             window._searchTimeout = setTimeout(() => {
               mettreAJourFiltres('search', e.target.value);
@@ -51,7 +57,7 @@ export default function Filtres() {
       {/* Filtre statut */}
       <select
         value={statutActuel}
-        onChange={(e) => mettreAJourFiltres('statut', e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => mettreAJourFiltres('statut', e.target.value)}
         className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-blue-300 bg-white"
       >
         <option value="">Tous les statuts</option>
@@ -64,7 +70,7 @@ export default function Filtres() {
       {/* Filtre priorité */}
       <select
         value={prioriteActuelle}
-        onChange={(e) => mettreAJourFiltres('priorite', e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => mettreAJourFiltres('priorite', e.target.value)}
         className="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-900 focus:outline-none focus:border-blue-300 bg-white"
       >
         <option value="">Toutes les priorités</option>

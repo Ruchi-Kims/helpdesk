@@ -2,14 +2,25 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, BarChart3, X } from 'lucide-react';
+import { LayoutDashboard, BarChart3, X, LucideIcon } from 'lucide-react';
 
-const menuItems = [
-  { label: 'Dashboard',     href: '/dashboard',     icon: LayoutDashboard },
-  { label: 'Statistiques',  href: '/statistiques',  icon: BarChart3 },
+interface MenuItem {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+}
+
+const menuItems: MenuItem[] = [
+  { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { label: 'Statistiques', href: '/statistiques', icon: BarChart3 },
 ];
 
-export default function Sidebar({ open, onClose }) {
+interface SidebarProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({ open, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (

@@ -3,7 +3,11 @@
 import { signOut, useSession } from 'next-auth/react';
 import { LogOut, Menu } from 'lucide-react';
 
-export default function TopBar({ onMenuClick }) {
+interface TopBarProps {
+  onMenuClick: () => void;
+}
+
+export default function TopBar({ onMenuClick }: TopBarProps) {
   const { data: session } = useSession();
 
   return (

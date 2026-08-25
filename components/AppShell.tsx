@@ -4,8 +4,12 @@ import { useState } from 'react';
 import Sidebar from '@/components/Sidebar';
 import TopBar from '@/components/TopBar';
 
-export default function AppShell({ children }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+interface AppShellProps {
+  children: React.ReactNode;
+}
+
+export default function AppShell({ children }: AppShellProps) {
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
 
   return (
     <div className="min-h-screen p-0 sm:p-4">

@@ -4,13 +4,21 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ImagePlus, Loader2 } from 'lucide-react';
 
-export default function UploadImageTicket({ ticketId }) {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [erreur, setErreur] = useState('');
+interface UploadImageTicketProps {
+  ticketId: string;
+}
 
-  async function handleFileChange(e) {
-    const file = e.target.files[0];
+interface CloudinaryResponse {
+  secure_url: string;
+}
+
+export default function UploadImageTicket({ ticketId }: UploadImageTicketProps) {
+  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [erreur, setErreur] = useState<string>('');
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
     if (!file) return;
 
     setErreur('');
@@ -18,7 +26,10 @@ export default function UploadImageTicket({ ticketId }) {
 
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET);
+    formData.append(
+      'upload_preset',
+      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET as string
+    );
 
     try {
       const res = await fetch(
@@ -26,9 +37,9 @@ export default function UploadImageTicket({ ticketId }) {
         { method: 'POST', body: formData }
       );
 
-      if (!res.ok) throw new Error('Échec de l\'upload');
+      if (!res.ok) throw new Error("Échec de l'upload");
 
-      const data = await res.json();
+      const data: CloudinaryResponse = await res.json();
 
       await fetch(`/api/tickets/${ticketId}`, {
         method: 'PATCH',
@@ -38,7 +49,7 @@ export default function UploadImageTicket({ ticketId }) {
 
       router.refresh();
     } catch (err) {
-      setErreur('Erreur lors de l\'envoi de l\'image');
+      setErreur("Erreur lors de l'envoi de l'image");
     } finally {
       setLoading(false);
     }
