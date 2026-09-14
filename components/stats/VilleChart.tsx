@@ -2,7 +2,16 @@
 
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-export default function VilleChart({ data }) {
+interface VilleDataItem {
+  ville: string;
+  total: number;
+}
+
+interface VilleChartProps {
+  data: VilleDataItem[];
+}
+
+export default function VilleChart({ data }: VilleChartProps) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm">
       <h2 className="text-sm font-semibold text-[#1F2338] mb-4">Tickets par ville</h2>

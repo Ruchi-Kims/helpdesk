@@ -1,15 +1,26 @@
 'use client';
 
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { StatutTicket } from '@/models/Ticket';
 
-const COULEURS = {
+interface StatutDataItem {
+  statut: StatutTicket;
+  label: string;
+  total: number;
+}
+
+interface StatutChartProps {
+  data: StatutDataItem[];
+}
+
+const COULEURS: Record<StatutTicket, string> = {
   ouvert: '#DC2626',
   en_cours: '#B45309',
   resolu: '#16A34A',
   ferme: '#8B8FA3',
 };
 
-export default function StatutChart({ data }) {
+export default function StatutChart({ data }: StatutChartProps) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm">
       <h2 className="text-sm font-semibold text-[#1F2338] mb-4">Répartition par statut</h2>

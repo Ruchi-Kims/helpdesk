@@ -2,12 +2,22 @@
 
 import { PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const COULEURS = {
+interface SLADataItem {
+  statut: 'respecte' | 'depasse';
+  label: string;
+  total: number;
+}
+
+interface SLAChartProps {
+  data: SLADataItem[];
+}
+
+const COULEURS: Record<SLADataItem['statut'], string> = {
   respecte: '#16A34A',
   depasse: '#DC2626',
 };
 
-export default function SLAChart({ data }) {
+export default function SLAChart({ data }: SLAChartProps) {
   const total = data.reduce((acc, d) => acc + d.total, 0);
 
   if (total === 0) {
