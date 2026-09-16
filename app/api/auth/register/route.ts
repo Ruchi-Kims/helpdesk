@@ -1,12 +1,18 @@
 import { connectDB } from '@/lib/mongodb';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function POST(request) {
+interface RegisterBody {
+  nom: string;
+  email: string;
+  password: string;
+}
+
+export async function POST(request: NextRequest) {
   try {
     await connectDB();
-    const { nom, email, password } = await request.json();
+    const { nom, email, password }: RegisterBody = await request.json();
 
     // Vérifie si l'email existe déjà
     const userExiste = await User.findOne({ email });
@@ -23,18 +29,15 @@ export async function POST(request) {
     await User.create({
       nom,
       email,
-      password: hashedPassword
+      password: hashedPassword,
     });
 
     return NextResponse.json(
       { message: 'Compte créé avec succès' },
       { status: 201 }
     );
-
   } catch (error) {
-    return NextResponse.json(
-      { message: error.message },
-      { status: 500 }
-    );
+    const message = error instanceof Error ? error.message : 'Erreur inconnue';
+    return NextResponse.json({ message }, { status: 500 });
   }
 }

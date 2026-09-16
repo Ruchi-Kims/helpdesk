@@ -4,29 +4,46 @@ import SLABadge from '@/components/SLABadge';
 import Filtres from '@/components/Filtres';
 import { Suspense } from 'react';
 import { getTicketsData } from '@/lib/tickets';
-import { LayoutGrid, CircleDot, Clock, CheckCircle2 } from 'lucide-react';
+import { LayoutGrid, CircleDot, Clock, CheckCircle2, LucideIcon } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
-export default async function Dashboard({ searchParams }) {
+interface DashboardProps {
+  searchParams: Promise<{
+    search?: string;
+    statut?: string;
+    priorite?: string;
+    mesTickets?: string;
+  }>;
+}
+
+interface StatCard {
+  label: string;
+  value: number;
+  icon: LucideIcon;
+  tint: string;
+  accent: string;
+}
+
+export default async function Dashboard({ searchParams }: DashboardProps) {
   const { search = '', statut = '', priorite = '', mesTickets = '' } = await searchParams;
   const session = await getServerSession(authOptions);
 
   const assigneAFiltre = mesTickets === '1' ? session?.user?.id : '';
-  const tickets = await getTicketsData(search, statut, priorite, assigneAFiltre);
+  const tickets = await getTicketsData(search, statut as any, priorite as any, assigneAFiltre);
 
   const stats = {
-    total:   tickets.length,
-    ouverts: tickets.filter(t => t.statut === 'ouvert').length,
-    enCours: tickets.filter(t => t.statut === 'en_cours').length,
-    resolus: tickets.filter(t => t.statut === 'resolu').length,
+    total: tickets.length,
+    ouverts: tickets.filter((t) => t.statut === 'ouvert').length,
+    enCours: tickets.filter((t) => t.statut === 'en_cours').length,
+    resolus: tickets.filter((t) => t.statut === 'resolu').length,
   };
 
-  const statCards = [
-    { label: 'Total',    value: stats.total,   icon: LayoutGrid,   tint: '#EFE8FF', accent: '#7C5CFC' },
-    { label: 'Ouverts',  value: stats.ouverts, icon: CircleDot,    tint: '#FDECEC', accent: '#DC2626' },
-    { label: 'En cours', value: stats.enCours, icon: Clock,        tint: '#FFF6E5', accent: '#B45309' },
-    { label: 'Résolus',  value: stats.resolus, icon: CheckCircle2, tint: '#E9FBEF', accent: '#16A34A' },
+  const statCards: StatCard[] = [
+    { label: 'Total', value: stats.total, icon: LayoutGrid, tint: '#EFE8FF', accent: '#7C5CFC' },
+    { label: 'Ouverts', value: stats.ouverts, icon: CircleDot, tint: '#FDECEC', accent: '#DC2626' },
+    { label: 'En cours', value: stats.enCours, icon: Clock, tint: '#FFF6E5', accent: '#B45309' },
+    { label: 'Résolus', value: stats.resolus, icon: CheckCircle2, tint: '#E9FBEF', accent: '#16A34A' },
   ];
 
   return (
@@ -112,9 +129,9 @@ export default async function Dashboard({ searchParams }) {
                     <td className="px-4 py-3 text-sm text-[#8B8FA3]">{ticket.demandeur}</td>
                     <td className="px-4 py-3">
                       <span className={`text-xs font-medium px-2.5 py-1 rounded-full
-                        ${ticket.priorite === 'haute'   ? 'bg-red-50 text-red-700'    : ''}
-                        ${ticket.priorite === 'moyenne' ? 'bg-amber-50 text-amber-700': ''}
-                        ${ticket.priorite === 'basse'   ? 'bg-gray-100 text-gray-500' : ''}
+                        ${ticket.priorite === 'haute' ? 'bg-red-50 text-red-700' : ''}
+                        ${ticket.priorite === 'moyenne' ? 'bg-amber-50 text-amber-700' : ''}
+                        ${ticket.priorite === 'basse' ? 'bg-gray-100 text-gray-500' : ''}
                       `}>
                         {ticket.priorite.charAt(0).toUpperCase() + ticket.priorite.slice(1)}
                       </span>
