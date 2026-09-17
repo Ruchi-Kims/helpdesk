@@ -7,6 +7,7 @@ import { getTicketsData } from '@/lib/tickets';
 import { LayoutGrid, CircleDot, Clock, CheckCircle2, LucideIcon } from 'lucide-react';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { StatutTicket, PrioriteTicket } from '@/models/Ticket';
 
 interface DashboardProps {
   searchParams: Promise<{
@@ -25,12 +26,30 @@ interface StatCard {
   accent: string;
 }
 
+const STATUTS_VALIDES: StatutTicket[] = ['ouvert', 'en_cours', 'resolu', 'ferme'];
+const PRIORITES_VALIDES: PrioriteTicket[] = ['haute', 'moyenne', 'basse'];
+
+function validerStatut(valeur: string): StatutTicket | undefined {
+  return STATUTS_VALIDES.includes(valeur as StatutTicket) ? (valeur as StatutTicket) : undefined;
+}
+
+function validerPriorite(valeur: string): PrioriteTicket | undefined {
+  return PRIORITES_VALIDES.includes(valeur as PrioriteTicket)
+    ? (valeur as PrioriteTicket)
+    : undefined;
+}
+
 export default async function Dashboard({ searchParams }: DashboardProps) {
   const { search = '', statut = '', priorite = '', mesTickets = '' } = await searchParams;
   const session = await getServerSession(authOptions);
 
   const assigneAFiltre = mesTickets === '1' ? session?.user?.id : '';
-  const tickets = await getTicketsData(search, statut as any, priorite as any, assigneAFiltre);
+  const tickets = await getTicketsData(
+    search,
+    validerStatut(statut),
+    validerPriorite(priorite),
+    assigneAFiltre
+  );
 
   const stats = {
     total: tickets.length,
